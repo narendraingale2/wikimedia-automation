@@ -3,6 +3,7 @@
 # Bring up vagrant nodes using
 
 vagrant up
+
 vagrant provision #This command will create inventory for ansible-playbooks
 
 # Bring up database 
