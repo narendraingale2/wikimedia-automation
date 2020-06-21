@@ -1,9 +1,9 @@
 # wikimedia-automation
 
-Steps to bring up this 
+# Bring up vagrant nodes using
 
 vagrant up
-vagrant provision
+vagrant provision #This command will create inventory for ansible-playbooks
 
 # Bring up database 
 ansible-playbook setup_mysql.yml --vault-password-file=~/.vault
@@ -31,3 +31,6 @@ ansible-playbook setup_nginx.yml --vault-password-file=~/.vault
 
 And you can access mediawiki 
 https://mymediawiki.com/
+
+# Cleanup
+vagrant destroy -f
