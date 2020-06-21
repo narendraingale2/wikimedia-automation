@@ -11,6 +11,7 @@ ansible-playbook setup_mysql.yml --vault-password-file=~/.vault
 
 # Bring up application
 #Use db_maintain=true for first time setup 
+
 ansible-playbook setup_mediawiki.yml --vault-password-file=~/.vault -e db_maintain=true 
 
 # Bring up Nginx 
@@ -35,3 +36,4 @@ https://mymediawiki.com/
 
 # Cleanup
 vagrant destroy -f
+
