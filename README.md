@@ -37,3 +37,4 @@ https://mymediawiki.com/
 # Cleanup
 vagrant destroy -f
 
+
