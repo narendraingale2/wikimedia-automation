@@ -1,0 +1,7 @@
+wiki:
+  install_path: /var/www/html/
+  user: www-data
+  major_version: "1.34"
+  version: 1.34.1
+
+db_server: localhost 

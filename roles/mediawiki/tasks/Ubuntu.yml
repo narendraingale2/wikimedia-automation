@@ -1,0 +1,17 @@
+
+- name: "Update packages"
+  apt:
+    upgrade: yes 
+    update_cache: yes
+    
+- name: "Install packages"
+  apt: 
+    name: "{{ item }}" 
+    state: installed
+    
+- name: "Start apache2"
+  systemd: 
+    name: apache2
+    enabled: True
+    state: started
+  loop: "{{ apt_dependency_pkg }}"

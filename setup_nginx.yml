@@ -1,0 +1,19 @@
+---
+- hosts: cl_nginx
+  become: yes
+  vars_files: 
+    - secrets.yml
+  roles:
+    - role: nginx
+      vars:
+        enable_ssl: true
+        nginx_upstreams:
+          - servers: "{{ groups['cl_app'] | map('extract',hostvars,'vagrant_ip_address') | list }}" 
+            name: "mediawiki"
+        nginx_vhosts:
+          - listen: "443 ssl http2"
+            server_name: "mymediawiki.com"
+            proxy_pass: "mediawiki"
+            state: present
+            ssl_certificate: /etc/nginx/ssl/nginx.crt
+            ssl_certificate_key: /etc/nginx/ssl/nginx.key

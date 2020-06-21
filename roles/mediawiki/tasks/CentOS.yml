@@ -1,0 +1,16 @@
+#- name: "Run yum update"
+#  shell: "yum update -y"
+#
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
+- name: "Install required packages"
+  yum:
+    name: "{{ dependency_pkgs }}"
+
+- name: "Start httpd"
+  systemd: 
+    name: httpd
+    enabled: True
+    state: started

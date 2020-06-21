@@ -1,0 +1,28 @@
+---
+- name: create ssl dir
+  file: 
+    path: "{{ nginx_ssl_dir }}"    
+    state: directory 
+    owner: root 
+    group: root 
+    mode: 0700
+
+- name: upload cert
+  template: 
+    src: nginx_ssl_cert.j2
+    dest: "{{ nginx_ssl_cert_file }}" 
+    owner: root 
+    group: root 
+    mode: 0400
+  notify: reload nginx
+
+- name: upload key
+  template: 
+    src: nginx_ssl_key.j2 
+    dest: "{{ nginx_ssl_key_file }}"
+    owner: root
+    group: root 
+    mode: 0400
+  notify: reload nginx
+
+

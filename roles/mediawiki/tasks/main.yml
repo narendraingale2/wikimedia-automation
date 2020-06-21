@@ -1,0 +1,42 @@
+- include_vars: "vars_{{ ansible_distribution  }}.yml"
+
+- name: "Include distro tasks"
+  include: "{{ ansible_distribution }}.yml"
+  
+- name: Download MediaWiki
+  get_url:
+    url: https://releases.wikimedia.org/mediawiki/{{ wiki.major_version }}/mediawiki-{{ wiki.version }}.tar.gz
+    dest: /tmp/mediawiki.tgz
+
+- name: Unarchive MediaWiki
+  shell: tar -xvf /tmp/mediawiki.tgz -C {{ wiki.install_path }}
+
+- name: Copy MediaWiki to web directory
+  shell: cp -r {{ wiki.install_path }}/mediawiki-{{ wiki.version }}/*  {{ wiki.install_path }}
+
+- name: Remove index.html
+  file:
+     path: "/var/www/html/index.html"
+     state: absent
+
+- name: Remove unwanted files
+  file:
+     path: "{{ wiki.install_path }}/mediawiki-{{ wiki.version }}/*"
+     state: absent
+
+- name: Remove LocalSettigs.php
+  file:
+    path: "{{ wiki.install_path }}/LocalSettings.php"
+    state: absent
+
+- name: run maintainance task
+  shell: php "{{ wiki.install_path }}"/maintenance/install.php --dbname="{{ mysql_databases[0]['name'] }}" --dbserver="{{db_server}}" --dbuser={{ mysql_users[0]['name'] }} --dbpass={{ mysql_wikimed_password }} --server="http://mymediawiki.com/" --scriptpath=/ --lang=en --pass=aaaaa "Wiki Name" "Admin"
+  when: inventory_hostname ==  groups['cl_app'][0] and db_maintain|bool
+
+- name: Create LocalSettigs.php
+  template:
+    src: LocalSettings.php.j2
+    dest: "{{ wiki.install_path }}/LocalSettings.php"
+  when: db_maintain|bool
+
+

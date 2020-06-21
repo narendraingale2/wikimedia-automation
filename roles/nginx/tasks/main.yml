@@ -1,0 +1,28 @@
+
+- include_vars: "vars_{{ ansible_distribution  }}.yml"
+
+- name: "Include distro tasks"
+  include: "{{ ansible_distribution }}.yml"
+
+- import_tasks: vhosts.yml
+
+# Nginx setup.
+- name: Copy nginx configuration in place.
+  template:
+    src: "{{ nginx_conf_template }}"
+    dest: "{{ nginx_conf_file_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+  notify:
+    - reload nginx
+
+- name: setup ssl certs
+  include: "setup_ssl.yml"
+  when: enable_ssl
+
+- name: Ensure nginx service is running as configured.
+  service:
+    name: nginx
+    state: "{{ nginx_service_state }}"
+    enabled: "{{ nginx_service_enabled }}"

@@ -1,0 +1,7 @@
+---                                                                                                                                                                                                            
+- name: Generate vagrant-ansible inventory
+  hosts: all
+  max_fail_percentage: "{{cli_max_fail_percentage|default(100)}}"
+  gather_facts: no
+  tasks:
+    - command: "echo test"   
