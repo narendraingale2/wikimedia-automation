@@ -12,7 +12,7 @@ ansible-playbook setup_mysql.yml --vault-password-file=~/.vault
 #Use db_maintain=true for first time setup 
 ansible-playbook setup_mediawiki.yml --vault-password-file=~/.vault -e db_maintain=true 
 
-#Bring up Nginx 
+# Bring up Nginx 
 
 ansible-playbook setup_nginx.yml --vault-password-file=~/.vault
 
