@@ -17,10 +17,10 @@ ansible-playbook setup_mediawiki.yml --vault-password-file=~/.vault -e db_mainta
 ansible-playbook setup_nginx.yml --vault-password-file=~/.vault
 
 # secret file varibles:
-mysql_root_password
-mysql_wikimed_password
-ssl_crt
-ssl_crt_key
+ mysql_root_password
+ mysql_wikimed_password
+ ssl_crt
+ ssl_crt_key
 
 # Add host entry in your /etc/hosts file as below
 
