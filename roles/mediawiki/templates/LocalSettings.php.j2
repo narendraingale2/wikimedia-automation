@@ -53,10 +53,10 @@ $wgEmailAuthentication = true;
 
 ## Database settings
 $wgDBtype = "mysql";
-$wgDBserver = "{{ hostvars[groups['cl_db'][0]]['vagrant_ip_address'] }}";
-$wgDBname = "{{ mysql_databases[0]['name'] }}";
-$wgDBuser = "{{ mysql_users[0]['name'] }}";
-$wgDBpassword = "{{ mysql_wikimed_password }}";
+$wgDBserver = "{{ mediawiki_db_server }}";
+$wgDBname = "{{ mediawiki_db }}";
+$wgDBuser = "{{ mediawiki_db_user }}";
+$wgDBpassword = "{{ mediawiki_db_pass }}";
 
 # MySQL specific settings
 $wgDBprefix = "";

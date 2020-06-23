@@ -3,40 +3,59 @@
 - name: "Include distro tasks"
   include: "{{ ansible_distribution }}.yml"
   
-- name: Download MediaWiki
-  get_url:
-    url: https://releases.wikimedia.org/mediawiki/{{ wiki.major_version }}/mediawiki-{{ wiki.version }}.tar.gz
-    dest: /tmp/mediawiki.tgz
+- name: Check release
+  shell: cat "{{ wiki.install_path }}/includes/Defines.php"
+  register: version_details
 
-- name: Unarchive MediaWiki
-  shell: tar -xvf /tmp/mediawiki.tgz -C {{ wiki.install_path }}
+- name: Install Mediawiki block
+  block:
+    - name: Download MediaWiki
+      get_url:
+        url: https://releases.wikimedia.org/mediawiki/{{ wiki.major_version }}/mediawiki-{{ wiki.version }}.tar.gz
+        dest: /tmp/mediawiki.tgz
+  
+    - name: Unarchive MediaWiki
+      unarchive:
+        src: /tmp/mediawiki.tgz
+        dest: "{{ wiki.install_path }}"
+        remote_src: yes
+    
+    - name: Copy MediaWiki to web directory
+      shell: cp -r {{ wiki.install_path }}/mediawiki-{{ wiki.version }}/*  {{ wiki.install_path }}
+  
+    
+    - name: Remove unwanted files
+      file:
+         path: "{{ wiki.install_path }}/mediawiki-{{ wiki.version }}"
+         state: absent
+    
+    - name: Remoe tar file
+      file:
+        path: /tmp/mediawiki.tgz
+        state: absent
+      ignore_errors: yes
 
-- name: Copy MediaWiki to web directory
-  shell: cp -r {{ wiki.install_path }}/mediawiki-{{ wiki.version }}/*  {{ wiki.install_path }}
-
+  when: not version_details.stdout is search(wiki.version) or force_install 
+    
 - name: Remove index.html
   file:
      path: "/var/www/html/index.html"
-     state: absent
-
-- name: Remove unwanted files
-  file:
-     path: "{{ wiki.install_path }}/mediawiki-{{ wiki.version }}/*"
      state: absent
 
 - name: Remove LocalSettigs.php
   file:
     path: "{{ wiki.install_path }}/LocalSettings.php"
     state: absent
+  when: setup_db|bool
 
 - name: run maintainance task
-  shell: php "{{ wiki.install_path }}"/maintenance/install.php --dbname="{{ mysql_databases[0]['name'] }}" --dbserver="{{db_server}}" --dbuser={{ mysql_users[0]['name'] }} --dbpass={{ mysql_wikimed_password }} --server="http://mymediawiki.com/" --scriptpath=/ --lang=en --pass=aaaaa "Wiki Name" "Admin"
-  when: inventory_hostname ==  groups['cl_app'][0] and db_maintain|bool
+  shell: php "{{ wiki.install_path }}"/maintenance/install.php --dbname="{{ mediawiki_db }}" --dbserver="{{mediawiki_db_server}}" --dbuser="{{ mediawiki_db_user }}" --dbpass="{{ mediawiki_db_pass }}" --server="http://mymediawiki.com/" --scriptpath=/ --lang=en --pass=aaaaa "Wiki Name" "Admin"
+  when: inventory_hostname ==  groups['cl_app'][0] and setup_db|bool
 
 - name: Create LocalSettigs.php
   template:
     src: LocalSettings.php.j2
     dest: "{{ wiki.install_path }}/LocalSettings.php"
-  when: db_maintain|bool
+  when: setup_db|bool
 
 

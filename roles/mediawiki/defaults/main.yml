@@ -4,4 +4,9 @@ wiki:
   major_version: "1.34"
   version: 1.34.1
 
-db_server: localhost 
+mediawiki_db_server: localhost
+mediawiki_db: "wikimed"
+mediawiki_db_user: "wikimed"
+mediawiki_db_pass: "wikimed"
+
+force_install: false
