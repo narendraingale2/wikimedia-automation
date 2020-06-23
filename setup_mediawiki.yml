@@ -3,7 +3,7 @@
 - name: Install Mediawiki
   hosts: cl_app
   vars_files:
-    - secrets.yml
+    - vars/secrets.yml
     - vars/main.yml
   vars:
     db_server: "{{ hostvars[groups['cl_db'][0]]['vagrant_ip_address'] }}"
