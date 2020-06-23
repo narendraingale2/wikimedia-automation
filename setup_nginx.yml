@@ -11,9 +11,14 @@
           - servers: "{{ groups['cl_app'] | map('extract',hostvars,'vagrant_ip_address') | list }}" 
             name: "mediawiki"
         nginx_vhosts:
+          - listen: "80"
+            server_name: "mymediawiki.com www.mymediawiki.com"
+            return: "301 https://mymediawiki.com$request_uri"
+            filename: "mymediawiki.com.80.conf"
           - listen: "443 ssl http2"
             server_name: "mymediawiki.com"
             proxy_pass: "mediawiki"
             state: present
             ssl_certificate: /etc/nginx/ssl/nginx.crt
             ssl_certificate_key: /etc/nginx/ssl/nginx.key
+            filename: "mymediawiki.com.443.conf"
